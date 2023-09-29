@@ -49,9 +49,9 @@ GPIO.setup(pin4, GPIO.OUT)
 
 def send_message(name, data, device):
     return requests.post(
-            "https://api.mailgun.net/v3/**/messages",
-            auth=("api", "********************************"),
-            data={"from": "Me <** >",
+            "https://api.mailgun.net/v3/sandboxa23eea2d073241058ce1703da7ba11a2.mailgun.org/messages",
+            auth=("api", "becd0fee112532e388a257f368b3c942-50f43e91-9541815d"),
+            data={"from": "Me <mailgun@becd0fee112532e388a257f368b3c942-50f43e91-9541815d>",
                     "to": ["artaimer00@gmail.com "],
                     "subject": "PKA GreenHouse",
                     "html": "<html> " + name + " is exceeding the threshold: " + data + " <br></br>"
@@ -83,35 +83,28 @@ def on_message(client, userdata, msg):
         client.publish('v1/devices/me/attributes', get_gpio_status(), 1)
 
     elif data['method'] == 'setFanOn':
-        # Update GPIO status and reply
         set_fan_status(data['params'])
         client.publish(msg.topic.replace('request', 'response'), get_fan_status(), 1)
         client.publish('v1/devices/me/attributes', get_fan_status(), 1)
     elif data['method'] == 'setFanOff':
-        # Update GPIO status and reply
         set_fan_status(data['params'])
         client.publish(msg.topic.replace('request', 'response'), get_fan_status(), 1)
         client.publish('v1/devices/me/attributes', get_fan_status(), 1)
         
     elif data['method'] == 'setWpumpOff':
-        # Update GPIO status and reply
         set_pump_status(data['params'])
         client.publish(msg.topic.replace('request', 'response'), get_pump_status(), 1)
         client.publish('v1/devices/me/attributes', get_pump_status(), 1)
     elif data['method'] == 'setWpumpOn':
-        # Update GPIO status and reply
         set_pump_status(data['params'])
         client.publish(msg.topic.replace('request', 'response'), get_pump_status(), 1)
         client.publish('v1/devices/me/attributes', get_pump_status(), 1)
         
     elif data['method'] == 'setHdoorOff':
-        # Update GPIO status and reply
         servo.angle= -90
         door_status={22: False}
         client.publish('v1/devices/me/attributes', json.dumps(door_status), 1)
-        
     elif data['method'] == 'setHdoorOn':
-        # Update GPIO status and reply
         servo.angle= 90
         door_status={22: True}
         client.publish('v1/devices/me/attributes', json.dumps(door_status), 1)
@@ -131,24 +124,18 @@ def set_gpio_status(status):
 
 
 def get_fan_status():
-    # Encode GPIOs state to json
     return json.dumps(fan_status)
     
 def set_fan_status(status):
-    # Output GPIOs state
     GPIO.output(pin2, GPIO.HIGH if status else GPIO.LOW)
-    # Update GPIOs state
     fan_status[27] = status
 
 
 def get_pump_status():
-    # Encode GPIOs state to json
     return json.dumps(pump_status)
 
 def set_pump_status(status):
-    # Output GPIOs state
     GPIO.output(pin4, GPIO.HIGH if status else GPIO.LOW)
-    # Update GPIOs state
     pump_status[16] = status
 
 
@@ -214,9 +201,6 @@ try:
         # Sending humidity and temperature data to ThingsBoard
         client.publish('v1/devices/me/telemetry', json.dumps(sensor_data), 1)
 
-
-
-
         client.publish('v1/devices/me/telemetry', json.dumps(local_data), 1)
          
         print(u"TemperatureI: {:g}\u00b0C, HumidityI: {:g}%".format(temperature, humidity))
@@ -245,10 +229,7 @@ try:
         print("Recorded moisture value is %s percentage" % soil_per)
 
 
-
         soil_data['Soilmoisture'] = soil_per
-
-
 
         client.publish('v1/devices/me/telemetry', json.dumps(soil_data), 1)
 
@@ -277,11 +258,8 @@ try:
         lightLevel = round(lightLevel, 2)
 
 
-
-
         lux_data['Lux'] = lightLevel
         
-
         client.publish('v1/devices/me/telemetry', json.dumps(lux_data), 1)
 
         if lightLevel > 9000:
@@ -307,8 +285,8 @@ try:
         draw.text((30, 30), "Lx : "+ str(lightLevel), fill=225)
         
    
-        display.image(image)  # set display buffer with the image buffer
-        display.display()  # write display buffer to the physical display
+        display.image(image)  
+        display.display()  
 
 
         next_reading += INTERVAL

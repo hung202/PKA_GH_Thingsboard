@@ -63,10 +63,7 @@ def send_message(name, data, device):
 def on_connect(client, userdata, rc, *extra_params):
     print('Connected with result code ' + str(rc))    # Subscribing to receive RPC requests
     client.subscribe('v1/devices/me/rpc/request/+')
-    # Sending current GPIO status
-    client.publish('v1/devices/me/attributes', get_gpio_status(), 1)
-    client.publish('v1/devices/me/attributes', get_fan_status(), 1)
-    client.publish('v1/devices/me/attributes', get_pump_status(), 1)
+    
 
 
 # The callback for when a PUBLISH message is received from the server.
